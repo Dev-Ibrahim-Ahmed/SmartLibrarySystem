@@ -2,8 +2,7 @@
 // Created by compi_tech on 8/28/2026.
 //
 
-#include "Book.h"
-
+#include "cmake-build-debug/funcs.h"
 
 Book* BookFind(const Book *arr ,const size_t &n,const string &query) {
     int cnt = 0;
@@ -32,4 +31,15 @@ Book* BookFind(Book *arr ,const size_t &n,const Book &query) {
         else ans = mid;
     }
     return (arr + ans);
+}
+
+template<typename Type>
+
+void resize(Type *x , size_t &sz) {
+    Type *y = new int[2 * sz];
+    for (int i = 0; i < sz; ++i) {
+        y[i] == x[i];
+    }
+    delete[] x;
+    x = y;
 }
