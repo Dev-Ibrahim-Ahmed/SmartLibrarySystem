@@ -5,7 +5,7 @@
 #include "Book.h"
 
 
-Book* BookFind(Book *arr , size_t n, string &query) {
+Book* BookFind(const Book *arr ,const size_t &n,const string &query) {
     int cnt = 0;
     bool marked[n];
     for (int i = 0; i < n; ++i)marked[i] = false;
@@ -23,7 +23,7 @@ Book* BookFind(Book *arr , size_t n, string &query) {
     return x;
 }
 
-Book* BookFind(Book *arr , size_t n, Book &query) {
+Book* BookFind(Book *arr ,const size_t &n,const Book &query) {
     int l = 0 , r = n , mid , ans = -1;
     while (l <= r) {
         mid = (l + r) / 2;

@@ -4,7 +4,8 @@
 
 #include "Book.h"
 
-Book::Book(string &title , string &ISBN , string &category , string &author) {
+Book::Book(const string &title ,const string &ISBN ,const string &category ,const string &author , const int &cnt) {
+    this->cnt = cnt;
     this->title = title;
     this->ISBN = ISBN;
     this->category = category;

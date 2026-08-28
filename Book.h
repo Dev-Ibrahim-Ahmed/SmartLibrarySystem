@@ -12,12 +12,14 @@ class Book {
     string title , category , ISBN , author;
     int cnt;
 public :
-    Book(string &, string &, string &, string &);
+    Book(const string &,const string &,const string &,const string & ,const int &);
     Book() {title = category = author = ISBN = ""; cnt = 0;};
     [[nodiscard]] string getCategory() const{return category;}
     [[nodiscard]] string getAuthor()const{return author;}
     [[nodiscard]] string getTitle()const{return title;}
     [[nodiscard]] string getISBN()const{return ISBN;}
+    friend Book *BookFind(Book *, size_t ,string &);
+    friend Book *BookFind(Book *, size_t ,Book &);
     bool operator == (const Book &x) const;
     bool operator > (const Book&x)const;
     ~Book();
