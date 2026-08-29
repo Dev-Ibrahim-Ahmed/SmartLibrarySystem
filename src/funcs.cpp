@@ -2,7 +2,7 @@
 // Created by compi_tech on 8/28/2026.
 //
 
-#include "../headers/funcs.h"
+#include "../include/funcs.h"
 
 Book* BookFind(const Book *arr ,const size_t &n,const string &query) {
     int cnt = 0;
