@@ -18,8 +18,6 @@ public :
     [[nodiscard]] string getAuthor()const{return author;}
     [[nodiscard]] string getTitle()const{return title;}
     [[nodiscard]] string getISBN()const{return ISBN;}
-    friend Book *BookFind(Book *, size_t ,string &);
-    friend Book *BookFind(Book *, size_t ,Book &);
     bool operator == (const Book &x) const;
     bool operator > (const Book&x)const;
     ~Book();
