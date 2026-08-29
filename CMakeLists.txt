@@ -4,7 +4,7 @@ project(SmartLibrarySystem)
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(SmartLibrarySystem main.cpp
-        VC/headers/funcs.h
-        VC/source/funcs.cpp
-        VC/source/Book.cpp
-        VC/headers/Book.h)
+        headers/funcs.h
+        source/funcs.cpp
+        source/Book.cpp
+        headers/Book.h)
