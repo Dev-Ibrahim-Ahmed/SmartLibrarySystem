@@ -2,7 +2,7 @@
 // Created by compi_tech on 8/28/2026.
 //
 
-#include "../headers/Book.h"
+#include "../include/Book.h"
 
 Book::Book(const string &title ,const string &ISBN ,const string &category ,const string &author , const int &cnt) {
     this->cnt = cnt;
