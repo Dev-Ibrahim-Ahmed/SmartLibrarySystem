@@ -1,4 +1,4 @@
-﻿#include "Person.h"
+﻿#include "../include/Person.h"
 
 Person::Person() : id(0), name(""), password("") {}
 Person::Person(int id, const string &name, const string &password) : id(id), name(name), password(password) {}
