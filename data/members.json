@@ -1,0 +1,37 @@
+﻿[
+  {
+    "borrowedBooks": [
+      "1984"
+    ],
+    "id": 101,
+    "limit": 3,
+    "name": "Ahmed Abdoo",
+    "password": "1234"
+  },
+  {
+    "borrowedBooks": [
+      "The Great Gatsby"
+    ],
+    "id": 102,
+    "limit": 3,
+    "name": "Sondos Ahmed",
+    "password": "pass2026"
+  },
+  {
+    "borrowedBooks": [
+      "Clean Code",
+      "The Alchemist"
+    ],
+    "id": 103,
+    "limit": 3,
+    "name": "Omar Khaled",
+    "password": "9012"
+  },
+  {
+    "borrowedBooks": [],
+    "id": 104,
+    "limit": 3,
+    "name": "Sara Hassan",
+    "password": "5678"
+  }
+]

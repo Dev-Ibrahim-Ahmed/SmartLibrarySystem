@@ -1,0 +1,79 @@
+[
+    {
+        "employeeId": "LIB-001",
+        "id": 1,
+        "name": "Ibrahim Al Abd",
+        "password": "admin123",
+        "type": "Librarian"
+    },
+    {
+        "employeeId": "LIB-002",
+        "id": 2,
+        "name": "Dr. Mona Tarek",
+        "password": "pass2026",
+        "type": "Librarian"
+    },
+    {
+        "borrowedBooks": [
+            "1984"
+        ],
+        "id": 101,
+        "limit": 3,
+        "name": "Ahmed Abdoo",
+        "password": "1234",
+        "type": "Member"
+    },
+    {
+        "borrowedBooks": [
+            "The Great Gatsby"
+        ],
+        "id": 102,
+        "limit": 3,
+        "name": "Sondos Ahmed",
+        "password": "pass2026",
+        "type": "Member"
+    },
+    {
+        "borrowedBooks": [
+            "Clean Code",
+            "The Alchemist"
+        ],
+        "id": 103,
+        "limit": 3,
+        "name": "Omar Khaled",
+        "password": "9012",
+        "type": "Member"
+    },
+    {
+        "borrowedBooks": [],
+        "id": 104,
+        "limit": 3,
+        "name": "Sara Hassan",
+        "password": "5678",
+        "type": "Member"
+    },
+    {
+        "borrowedBooks": [],
+        "id": 105,
+        "limit": 3,
+        "name": "Nour Tarek",
+        "password": "pass2026",
+        "type": "Member"
+    },
+    {
+        "borrowedBooks": [],
+        "id": 105,
+        "limit": 3,
+        "name": "Nour Tarek",
+        "password": "pass2026",
+        "type": "Member"
+    },
+    {
+        "borrowedBooks": [],
+        "id": 105,
+        "limit": 3,
+        "name": "Nour Tarek",
+        "password": "pass2026",
+        "type": "Member"
+    }
+]

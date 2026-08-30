@@ -1,0 +1,86 @@
+[
+    {
+        "ISBN": "978-0743273565",
+        "author": "F. Scott Fitzgerald",
+        "category": "Classic",
+        "cnt": 3,
+        "title": "The Great Gatsby"
+    },
+    {
+        "ISBN": "978-0451524935",
+        "author": "George Orwell",
+        "category": "Dystopian",
+        "cnt": 2,
+        "title": "1984"
+    },
+    {
+        "ISBN": "978-0061120084",
+        "author": "Harper Lee",
+        "category": "Classic",
+        "cnt": 4,
+        "title": "To Kill a Mockingbird"
+    },
+    {
+        "ISBN": "978-0060850524",
+        "author": "Aldous Huxley",
+        "category": "Dystopian",
+        "cnt": 2,
+        "title": "Brave New World"
+    },
+    {
+        "ISBN": "978-0062315007",
+        "author": "Paulo Coelho",
+        "category": "Adventure",
+        "cnt": 5,
+        "title": "The Alchemist"
+    },
+    {
+        "ISBN": "978-0132350884",
+        "author": "Robert C. Martin",
+        "category": "Software Engineering",
+        "cnt": 3,
+        "title": "Clean Code"
+    },
+    {
+        "ISBN": "978-0201633610",
+        "author": "Erich Gamma et al.",
+        "category": "Software Engineering",
+        "cnt": 2,
+        "title": "Design Patterns"
+    },
+    {
+        "ISBN": "978-0321563842",
+        "author": "Bjarne Stroustrup",
+        "category": "Computer Science",
+        "cnt": 4,
+        "title": "The C++ Programming Language"
+    },
+    {
+        "ISBN": "978-0547928227",
+        "author": "J.R.R. Tolkien",
+        "category": "Fantasy",
+        "cnt": 4,
+        "title": "The Hobbit"
+    },
+    {
+        "ISBN": "978-0547928227",
+        "author": "J.R.R. Tolkien",
+        "category": "Fantasy",
+        "cnt": 4,
+        "title": "The Hobbit"
+    },
+    {
+        "ISBN": "978-0547928227",
+        "author": "J.R.R. Tolkien",
+        "category": "Fantasy",
+        "cnt": 4,
+        "title": "The Hobbit"
+    },
+    {
+        "ISBN": "978-0547928227",
+        "author": "J.R.R. Tolkien",
+        "category": "Fantasy",
+        "cnt": 4,
+        "title": "The Hobbit"
+    }
+]

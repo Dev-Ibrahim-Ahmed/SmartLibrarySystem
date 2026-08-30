@@ -1,4 +1,4 @@
-﻿#ifndef MEMBER_H
+#ifndef MEMBER_H
 #define MEMBER_H
 
 #include "Person.h"
@@ -12,8 +12,9 @@ using namespace std;
 
 class Member : public Person {
 public:
-    resizableArray<Book *>books;
-    int limit , Borrowed;
+    resizableArray<Book*> books;
+    int limit;
+    int Borrowed;
 
     Member();
     Member(int id, const string &name, const string &password, int limit = 3);
@@ -22,11 +23,12 @@ public:
     bool borrowBook(resizableArray<Book> &catalog , string query);
     bool returnBook(const string &titleOrISBN);
     double calculateFine(int daysLate, double ratePerDay) const;
-    void displayInfo() const;
 
-    const resizableArray<Book *> getBooks() const;
+    void displayInfo() const override;
+
+    const resizableArray<Book*>& getBooks() const;
     int getLimit() const;
     void setLimit(int newLimit);
 };
 
-#endif // MEMBER_H
+#endif

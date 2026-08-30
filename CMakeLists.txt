@@ -1,15 +1,27 @@
-cmake_minimum_required(VERSION 4.1)
-project(SmartLibrarySystem)
+cmake_minimum_required(VERSION 3.16)
+project(SmartLibrarySystem LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED OFF)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_executable(SmartLibrarySystem main.cpp
-        include/funcs.h
-        src/funcs.cpp
-        src/Book.cpp
-        include/Book.h
-        include/Person.h
-        include/Member.h
-        src/Member.cpp
-        src/Person.cpp
-        include/resizableArray.h)
+include_directories(include)
+
+add_executable(SmartLibrarySystem
+    main.cpp
+    include/Person.h
+    src/Person.cpp
+    include/Member.h
+    src/Member.cpp
+    include/Librarian.h
+    src/Librarian.cpp
+    include/Book.h
+    src/Book.cpp
+    include/funcs.h
+    src/funcs.cpp
+    include/resizableArray.h
+    src/resizableArray.cpp
+    include/DataManager.h
+    src/DataManager.cpp
+    include/json.hpp
+)
