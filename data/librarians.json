@@ -1,0 +1,14 @@
+﻿[
+  {
+    "employeeId": "LIB-001",
+    "id": 1,
+    "name": "Ibrahim Al Abd",
+    "password": "admin123"
+  },
+  {
+    "employeeId": "LIB-002",
+    "id": 2,
+    "name": "Dr. Mona Tarek",
+    "password": "pass2026"
+  }
+]

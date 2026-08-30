@@ -1,4 +1,4 @@
-﻿#ifndef PERSON_H
+#ifndef PERSON_H
 #define PERSON_H
 
 #include <iostream>
@@ -7,7 +7,7 @@
 using namespace std;
 
 class Person {
-protected:
+private:
     int id;
     string name;
     string password;
@@ -24,9 +24,9 @@ public:
     void setId(int newId);
     void setName(const string &newName);
     void setPassword(const string &newPassword);
-
     bool checkPassword(const string &pass) const;
-    void displayInfo() const;
+
+    virtual void displayInfo() const = 0;
 };
 
-#endif // PERSON_H
+#endif

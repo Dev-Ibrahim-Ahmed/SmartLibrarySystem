@@ -1,13 +1,13 @@
-﻿#include "../include/Member.h"
-#include <iomanip>
+#include "Member.h"
+#include <iostream>
 
-Member::Member() : Person(), limit(3) , Borrowed(0){
-    books = resizableArray<Book *>(3);
+Member::Member() : Person(), limit(3), Borrowed(0) {
+    books = resizableArray<Book*>(3);
 }
 
 Member::Member(int id, const string &name, const string &password, int limit)
-    : Person(id, name, password), limit(limit) , Borrowed(0){
-    books = resizableArray<Book *>(3);
+    : Person(id, name, password), limit(limit), Borrowed(0) {
+    books = resizableArray<Book*>(3);
 }
 
 bool Member::canBorrow() const {
@@ -16,56 +16,55 @@ bool Member::canBorrow() const {
 
 bool Member::borrowBook(resizableArray<Book> &catalog, size_t catalogSize, string query) {
     if (!canBorrow()) {
-        cout << "  [Error] " << name << " reached the borrow limit of " << limit << " books. Cannot borrow \"" << query << "\"." << endl;
+        cout << "Error: " << getName() << " reached the borrow limit of " << limit << " books." << endl;
         return false;
     }
 
-    resizableArray<Book *>found = BookFind(catalog, catalogSize, query);
-    if (found.size() != 0) {
+    resizableArray<Book*> found = BookFind(catalog, catalogSize, query);
+    if (found.size() > 0) {
         if (found.size() == 1) {
-            cout << "Found " << found.size() << "Book that satisfies your query !" << endl;
-            cout << "Do you want to borrow it ? Y\\N" << endl;
-            char ch; cin >> ch;
-            if (ch == 'Y') {
-                cout << "  [Success] " << name << " borrowed: \"" << found[found.size() - 1]->getTitle() << "\"" << endl;
-                --*found[found.size() - 1];
-                books[Borrowed] = found[found.size() - 1];
-                Borrowed++;
+            cout << "Found 1 book matching your query. Borrow it? (Y/N): ";
+            char ch;
+            cin >> ch;
+            if (ch == 'Y' || ch == 'y') {
+                Book* b = found[0];
+                cout << getName() << " borrowed: " << b->getTitle() << endl;
+                --(*b);
+                books[Borrowed++] = b;
             }
-        }
-        else {
-            cout << "Found " << found.size() << "Books that satisfies your query !" << endl;
-            for (int i = 0; i < found.size(); ++i) {
-                cout << "[" << i + 1 << "]" << endl;
+        } else {
+            cout << "Found " << found.size() << " books matching your query:" << endl;
+            for (int i = 0; i < found.size(); i++) {
+                cout << "[" << (i + 1) << "] ";
                 found[i]->showData();
-                cout << "----------------------------------------" << endl;
             }
-            cout << "Which one would like to borrow ? (0 if none)" << endl;
-            int idx; cin >> idx;
-            if (idx) {
-                cout << "  [Success] " << name << " borrowed: \"" << found[idx - 1]->getTitle() << "\"" << endl;
-                --*found[idx - 1];
-                books[Borrowed] = found[idx - 1];
-                Borrowed++;
+            cout << "Enter number to borrow (0 to cancel): ";
+            int idx;
+            cin >> idx;
+            if (idx > 0 && idx <= found.size()) {
+                Book* b = found[idx - 1];
+                cout << getName() << " borrowed: " << b->getTitle() << endl;
+                --(*b);
+                books[Borrowed++] = b;
             }
         }
         return true;
     }
 
-    cout << "  [Error] Book not found in catalog: \"" << query << "\"" << endl;
+    cout << "Error: Book not found in catalog: " << query << endl;
     return false;
 }
 
 bool Member::returnBook(const string &titleOrISBN) {
-    for (size_t i = 0; i < Borrowed; ++i) {
-        if (books[i]->getTitle() == titleOrISBN || books[i]->getISBN() == titleOrISBN) {
-            cout << "  [Success] " << name << " returned: \"" << books[i]->getTitle() << "\"" << endl;
+    for (int i = 0; i < Borrowed; i++) {
+        if (books[i] != nullptr && (books[i]->getTitle() == titleOrISBN || books[i]->getISBN() == titleOrISBN)) {
+            cout << getName() << " returned: " << books[i]->getTitle() << endl;
             books[i] = nullptr;
             Borrowed--;
             return true;
         }
     }
-    cout << "  [Error] \"" << titleOrISBN << "\" was not found in " << name << "'s borrowed list." << endl;
+    cout << "Error: " << titleOrISBN << " not found in borrowed list." << endl;
     return false;
 }
 
@@ -75,22 +74,26 @@ double Member::calculateFine(int daysLate, double ratePerDay) const {
 }
 
 void Member::displayInfo() const {
-    cout << "----------------------------------------" << endl;
-    cout << "  [Member Profile]" << endl;
-    cout << "  ID       : " << id << endl;
-    cout << "  Name     : " << name << endl;
-    cout << "  Borrowed : " << Borrowed << " / " << limit << " books" << endl;
+    cout << "[Member Profile] ID: " << getId() << " | Name: " << getName() << " | Borrowed: " << Borrowed << "/" << limit << endl;
     if (Borrowed == 0) {
-        cout << "  Books    : (none)" << endl;
+        cout << "  No borrowed books." << endl;
     } else {
-        cout << "  Books    :" << endl;
-        for (size_t i = 0; i < Borrowed; ++i) {
-            cout << "    [" << (i + 1) << "] " << books[i]->getTitle() << endl;
+        for (int i = 0; i < Borrowed; i++) {
+            if (books[i] != nullptr) {
+                cout << "  - " << books[i]->getTitle() << endl;
+            }
         }
     }
-    cout << "----------------------------------------" << endl;
 }
 
-const resizableArray<Book *> Member::getBooks() const { return books; }
-int Member::getLimit() const { return limit; }
-void Member::setLimit(int newLimit) { limit = newLimit; }
+const resizableArray<Book*>& Member::getBooks() const {
+    return books;
+}
+
+int Member::getLimit() const {
+    return limit;
+}
+
+void Member::setLimit(int newLimit) {
+    limit = newLimit;
+}
