@@ -1,15 +1,18 @@
-//
-// Created by Ibrahim on 8/28/2026.
-//
+#ifndef FUNCS_H
+#define FUNCS_H
 
-#ifndef SMARTLIBRARYSYSTEM_FUNCS_H
-#define SMARTLIBRARYSYSTEM_FUNCS_H
 #include "Book.h"
-#include"resizableArray.h"
+#include "resizableArray.h"
+#include <string>
+#include <cstddef>
 
+using namespace std;
 
-resizableArray<Book *>BookFind(const resizableArray<Book>&, size_t &,string &);
-Book *BookFind(const resizableArray<Book>&, size_t &,Book &);
+resizableArray<Book*> BookFind(const resizableArray<Book> &arr, const size_t &n, const string &query);
+Book* BookFind(const resizableArray<Book> &arr, const size_t &n, const Book &query);
 
+void sortBooksByTitle(resizableArray<Book> &arr);
+void sortBooksByISBN(resizableArray<Book> &arr);
+void sortBooksByTitle(resizableArray<Book*> &arr);
 
-#endif //SMARTLIBRARYSYSTEM_FUNCS_H
+#endif
