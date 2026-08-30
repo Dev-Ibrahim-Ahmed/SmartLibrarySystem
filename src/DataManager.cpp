@@ -1,211 +1,130 @@
 ﻿#include "DataManager.h"
+#include "json.hpp"
 #include <fstream>
 #include <iostream>
-#include <sstream>
 
-void DataManager::createDefaultBooksFile(const string &) {}
-void DataManager::createDefaultPersonsFile(const string &) {}
+using json = nlohmann::json;
 
 void DataManager::loadBooks(const string &filePath, resizableArray<Book> &catalog) {
     ifstream file(filePath);
     if (!file.is_open()) {
-        catalog.addItem(Book("The Great Gatsby", "978-0743273565", "Classic", "F. Scott Fitzgerald", 3));
-        catalog.addItem(Book("1984", "978-0451524935", "Dystopian", "George Orwell", 2));
-        catalog.addItem(Book("To Kill a Mockingbird", "978-0061120084", "Classic", "Harper Lee", 4));
-        catalog.addItem(Book("The Alchemist", "978-0062315007", "Adventure", "Paulo Coelho", 5));
-        catalog.addItem(Book("Clean Code", "978-0132350884", "Software Engineering", "Robert C. Martin", 3));
+        cout << "Could not open " << filePath << endl;
         return;
     }
 
-    string line;
-    string title, author, ISBN, category;
-    int cnt = 1;
+    json j;
+    file >> j;
 
-    while (getline(file, line)) {
-        size_t tPos = line.find("\"title\":");
-        if (tPos != string::npos) {
-            size_t s = line.find('"', tPos + 8) + 1;
-            size_t e = line.find('"', s);
-            title = line.substr(s, e - s);
-        }
-        size_t aPos = line.find("\"author\":");
-        if (aPos != string::npos) {
-            size_t s = line.find('"', aPos + 9) + 1;
-            size_t e = line.find('"', s);
-            author = line.substr(s, e - s);
-        }
-        size_t iPos = line.find("\"ISBN\":");
-        if (iPos != string::npos) {
-            size_t s = line.find('"', iPos + 7) + 1;
-            size_t e = line.find('"', s);
-            ISBN = line.substr(s, e - s);
-        }
-        size_t cPos = line.find("\"category\":");
-        if (cPos != string::npos) {
-            size_t s = line.find('"', cPos + 11) + 1;
-            size_t e = line.find('"', s);
-            category = line.substr(s, e - s);
-        }
-        size_t cntPos = line.find("\"cnt\":");
-        if (cntPos != string::npos) {
-            size_t s = cntPos + 6;
-            while (s < line.size() && (line[s] == ' ' || line[s] == ':')) s++;
-            cnt = atoi(line.substr(s).c_str());
-            if (!title.empty() && !ISBN.empty()) {
-                catalog.addItem(Book(title, ISBN, category, author, cnt));
-                title = author = ISBN = category = "";
-                cnt = 1;
-            }
-        }
+    for (int i = 0; i < (int)j.size(); i++) {
+        string title = j[i]["title"];
+        string author = j[i]["author"];
+        string ISBN = j[i]["ISBN"];
+        string category = j[i]["category"];
+        int cnt = j[i]["cnt"];
+        catalog.addItem(Book(title, ISBN, category, author, cnt));
     }
-    if (catalog.size() == 0) {
-        catalog.addItem(Book("The Great Gatsby", "978-0743273565", "Classic", "F. Scott Fitzgerald", 3));
-        catalog.addItem(Book("1984", "978-0451524935", "Dystopian", "George Orwell", 2));
-        catalog.addItem(Book("To Kill a Mockingbird", "978-0061120084", "Classic", "Harper Lee", 4));
-        catalog.addItem(Book("The Alchemist", "978-0062315007", "Adventure", "Paulo Coelho", 5));
-        catalog.addItem(Book("Clean Code", "978-0132350884", "Software Engineering", "Robert C. Martin", 3));
-    }
-    cout << "Loaded " << catalog.size() << " books." << endl;
+    cout << "Loaded " << catalog.size() << " books from " << filePath << endl;
 }
 
 void DataManager::saveBooks(const string &filePath, const resizableArray<Book> &catalog) {
-    ofstream file(filePath);
-    if (!file.is_open()) return;
-    file << "[\n";
+    json j = json::array();
     for (int i = 0; i < catalog.size(); i++) {
-        file << "  {\n";
-        file << "    \"title\": \"" << catalog[i].getTitle() << "\",\n";
-        file << "    \"author\": \"" << catalog[i].getAuthor() << "\",\n";
-        file << "    \"ISBN\": \"" << catalog[i].getISBN() << "\",\n";
-        file << "    \"category\": \"" << catalog[i].getCategory() << "\",\n";
-        file << "    \"cnt\": " << catalog[i].getCount() << "\n";
-        file << "  }" << (i + 1 < catalog.size() ? ",\n" : "\n");
+        json b;
+        b["title"] = catalog[i].getTitle();
+        b["author"] = catalog[i].getAuthor();
+        b["ISBN"] = catalog[i].getISBN();
+        b["category"] = catalog[i].getCategory();
+        b["cnt"] = catalog[i].getCount();
+        j.push_back(b);
     }
-    file << "]\n";
-}
 
-void DataManager::saveBooks(const string &filePath, const resizableArray<Book *> &books) {
     ofstream file(filePath);
-    if (!file.is_open()) return;
-    file << "[\n";
-    for (int i = 0; i < books.size(); i++) {
-        if (books[i] == nullptr) continue;
-        file << "  {\n";
-        file << "    \"title\": \"" << books[i]->getTitle() << "\",\n";
-        file << "    \"author\": \"" << books[i]->getAuthor() << "\",\n";
-        file << "    \"ISBN\": \"" << books[i]->getISBN() << "\",\n";
-        file << "    \"category\": \"" << books[i]->getCategory() << "\",\n";
-        file << "    \"cnt\": " << books[i]->getCount() << "\n";
-        file << "  }" << (i + 1 < books.size() ? ",\n" : "\n");
+    if (file.is_open()) {
+        file << j.dump(4) << endl;
+        cout << "Saved " << catalog.size() << " books to " << filePath << endl;
     }
-    file << "]\n";
 }
 
-void DataManager::loadPersons(const string &filePath, resizableArray<Person *> &users, const resizableArray<Book> &) {
+void DataManager::loadPersons(const string &filePath, resizableArray<Person *> &users, const resizableArray<Book> &catalog) {
     ifstream file(filePath);
     if (!file.is_open()) {
-        users.addItem(new Librarian(1, "Ibrahim Al Abd", "admin123", "LIB-001"));
-        users.addItem(new Librarian(2, "Dr. Mona Tarek", "pass2026", "LIB-002"));
-        users.addItem(new Member(101, "Ahmed Abdoo", "1234", 3));
-        users.addItem(new Member(102, "Sondos Ahmed", "pass2026", 3));
-        users.addItem(new Member(103, "Omar Khaled", "9012", 3));
-        users.addItem(new Member(104, "Sara Hassan", "5678", 3));
-        cout << "Loaded " << users.size() << " default users." << endl;
+        cout << "Could not open " << filePath << endl;
         return;
     }
 
-    string line;
-    string type, name, password, empId;
-    int id = 0, limit = 3;
+    json j;
+    file >> j;
 
-    while (getline(file, line)) {
-        size_t tyPos = line.find("\"type\":");
-        if (tyPos != string::npos) {
-            size_t s = line.find('"', tyPos + 7) + 1;
-            size_t e = line.find('"', s);
-            type = line.substr(s, e - s);
-        }
-        size_t idPos = line.find("\"id\":");
-        if (idPos != string::npos) {
-            size_t s = idPos + 5;
-            while (s < line.size() && (line[s] == ' ' || line[s] == ':')) s++;
-            id = atoi(line.substr(s).c_str());
-        }
-        size_t nPos = line.find("\"name\":");
-        if (nPos != string::npos) {
-            size_t s = line.find('"', nPos + 7) + 1;
-            size_t e = line.find('"', s);
-            name = line.substr(s, e - s);
-        }
-        size_t pPos = line.find("\"password\":");
-        if (pPos != string::npos) {
-            size_t s = line.find('"', pPos + 11) + 1;
-            size_t e = line.find('"', s);
-            password = line.substr(s, e - s);
-        }
-        size_t ePos = line.find("\"employeeId\":");
-        if (ePos != string::npos) {
-            size_t s = line.find('"', ePos + 13) + 1;
-            size_t e = line.find('"', s);
-            empId = line.substr(s, e - s);
-        }
-        size_t limPos = line.find("\"limit\":");
-        if (limPos != string::npos) {
-            size_t s = limPos + 8;
-            while (s < line.size() && (line[s] == ' ' || line[s] == ':')) s++;
-            limit = atoi(line.substr(s).c_str());
-        }
+    for (int i = 0; i < (int)j.size(); i++) {
+        string type = j[i]["type"];
+        int id = j[i]["id"];
+        string name = j[i]["name"];
+        string password = j[i]["password"];
 
-        if (line.find('}') != string::npos && id != 0) {
-            if (type == "Librarian") {
-                users.addItem(new Librarian(id, name, password, empId));
-            } else {
-                users.addItem(new Member(id, name, password, limit));
+        if (type == "Librarian") {
+            string empId = j[i]["employeeId"];
+            users.addItem(new Librarian(id, name, password, empId));
+        } else {
+            int limit = j[i]["limit"];
+            Member *m = new Member(id, name, password, limit);
+
+            json bList = j[i]["borrowedBooks"];
+            for (int k = 0; k < (int)bList.size(); k++) {
+                string bookTitle = bList[k];
+                for (int b = 0; b < catalog.size(); b++) {
+                    if (catalog[b].getTitle() == bookTitle || catalog[b].getISBN() == bookTitle) {
+                        if (m->Borrowed < m->limit) {
+                            m->books[m->Borrowed++] = const_cast<Book*>(&catalog[b]);
+                        }
+                        break;
+                    }
+                }
             }
-            type = name = password = empId = "";
-            id = 0;
-            limit = 3;
+            users.addItem(m);
         }
     }
-
-    if (users.size() == 0) {
-        users.addItem(new Librarian(1, "Ibrahim Al Abd", "admin123", "LIB-001"));
-        users.addItem(new Librarian(2, "Dr. Mona Tarek", "pass2026", "LIB-002"));
-        users.addItem(new Member(101, "Ahmed Abdoo", "1234", 3));
-        users.addItem(new Member(102, "Sondos Ahmed", "pass2026", 3));
-        users.addItem(new Member(103, "Omar Khaled", "9012", 3));
-        users.addItem(new Member(104, "Sara Hassan", "5678", 3));
-    }
-    cout << "Loaded " << users.size() << " users." << endl;
+    cout << "Loaded " << users.size() << " users from " << filePath << endl;
 }
 
 void DataManager::savePersons(const string &filePath, const resizableArray<Person *> &users) {
-    ofstream file(filePath);
-    if (!file.is_open()) return;
-    file << "[\n";
+    json j = json::array();
     for (int i = 0; i < users.size(); i++) {
         if (users[i] == nullptr) continue;
+
         Member *m = dynamic_cast<Member*>(users[i]);
         if (m != nullptr) {
-            file << "  {\n";
-            file << "    \"type\": \"Member\",\n";
-            file << "    \"id\": " << m->getId() << ",\n";
-            file << "    \"name\": \"" << m->getName() << "\",\n";
-            file << "    \"password\": \"" << m->getPassword() << "\",\n";
-            file << "    \"limit\": " << m->getLimit() << "\n";
-            file << "  }" << (i + 1 < users.size() ? ",\n" : "\n");
+            json bList = json::array();
+            for (int k = 0; k < m->Borrowed; k++) {
+                if (m->books[k] != nullptr) {
+                    bList.push_back(m->books[k]->getTitle());
+                }
+            }
+
+            json u;
+            u["type"] = "Member";
+            u["id"] = m->getId();
+            u["name"] = m->getName();
+            u["password"] = m->getPassword();
+            u["limit"] = m->getLimit();
+            u["borrowedBooks"] = bList;
+            j.push_back(u);
         } else {
             Librarian *lib = dynamic_cast<Librarian*>(users[i]);
             if (lib != nullptr) {
-                file << "  {\n";
-                file << "    \"type\": \"Librarian\",\n";
-                file << "    \"id\": " << lib->getId() << ",\n";
-                file << "    \"name\": \"" << lib->getName() << "\",\n";
-                file << "    \"password\": \"" << lib->getPassword() << "\",\n";
-                file << "    \"employeeId\": \"" << lib->getEmployeeId() << "\"\n";
-                file << "  }" << (i + 1 < users.size() ? ",\n" : "\n");
+                json u;
+                u["type"] = "Librarian";
+                u["id"] = lib->getId();
+                u["name"] = lib->getName();
+                u["password"] = lib->getPassword();
+                u["employeeId"] = lib->getEmployeeId();
+                j.push_back(u);
             }
         }
     }
-    file << "]\n";
+
+    ofstream file(filePath);
+    if (file.is_open()) {
+        file << j.dump(4) << endl;
+        cout << "Saved users to " << filePath << endl;
+    }
 }
