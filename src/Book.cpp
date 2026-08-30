@@ -1,5 +1,5 @@
 //
-// Created by compi_tech on 8/28/2026.
+// Created by Ibrahim on 8/28/2026.
 //
 
 #include "../include/Book.h"
@@ -18,6 +18,21 @@ bool Book::operator==(const Book &x) const {
 
 bool Book::operator>(const Book &x) const {
     return this->ISBN > x.getISBN();
+}
+
+void Book::operator --() {cnt--;}
+void Book::operator ++() {cnt++;}
+
+istream &operator >> (istream &input , Book &x) {
+    std::cout << "Enter the title of the book : ";
+    std::cin >> x.title;
+    std::cout << "Enter the ISBN of the book : ";
+    std::cin >> x.ISBN;
+    std::cout << "Enter the category of the book : ";
+    std::cin >> x.category;
+    std::cout << "Enter the author of the book : ";
+    std::cin >> x.author;
+    return input;
 }
 
 Book::~Book() = default;

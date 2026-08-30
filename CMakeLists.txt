@@ -7,4 +7,10 @@ add_executable(SmartLibrarySystem main.cpp
         include/funcs.h
         src/funcs.cpp
         src/Book.cpp
-        include/Book.h)
+        include/Book.h
+        include/Person.h
+        include/Member.h
+        src/Member.cpp
+        src/Person.cpp
+        src/resizableArray.cpp
+        include/resizableArray.h)
