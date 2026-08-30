@@ -12,5 +12,4 @@ add_executable(SmartLibrarySystem main.cpp
         include/Member.h
         src/Member.cpp
         src/Person.cpp
-        src/resizableArray.cpp
         include/resizableArray.h)

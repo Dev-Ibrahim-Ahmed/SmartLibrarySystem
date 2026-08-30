@@ -4,6 +4,7 @@
 #include "Person.h"
 #include "Book.h"
 #include "funcs.h"
+#include "resizableArray.h"
 #include <iostream>
 #include <string>
 
@@ -18,7 +19,7 @@ public:
     Member(int id, const string &name, const string &password, int limit = 3);
 
     bool canBorrow() const;
-    bool borrowBook(resizableArray<Book> &catalog, size_t catalogSize, string query);
+    bool borrowBook(resizableArray<Book> &catalog , string query);
     bool returnBook(const string &titleOrISBN);
     double calculateFine(int daysLate, double ratePerDay) const;
     void displayInfo() const;

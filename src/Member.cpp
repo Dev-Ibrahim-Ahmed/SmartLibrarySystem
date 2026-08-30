@@ -14,18 +14,22 @@ bool Member::canBorrow() const {
     return Borrowed < limit;
 }
 
-bool Member::borrowBook(resizableArray<Book> &catalog, size_t catalogSize, string query) {
+bool Member::borrowBook(resizableArray<Book> &catalog, string query) {
     if (!canBorrow()) {
         cout << "  [Error] " << name << " reached the borrow limit of " << limit << " books. Cannot borrow \"" << query << "\"." << endl;
         return false;
     }
 
-    resizableArray<Book *>found = BookFind(catalog, catalogSize, query);
+    resizableArray<Book *>found = BookFind(catalog , query);
     if (found.size() != 0) {
         if (found.size() == 1) {
             cout << "Found " << found.size() << "Book that satisfies your query !" << endl;
             cout << "Do you want to borrow it ? Y\\N" << endl;
-            char ch; cin >> ch;
+            char ch;
+            while (ch != 'Y' && ch != 'N') {
+                validate(ch , "your choice : ");
+                cout << "Invalid choice" << endl;
+            }
             if (ch == 'Y') {
                 cout << "  [Success] " << name << " borrowed: \"" << found[found.size() - 1]->getTitle() << "\"" << endl;
                 --*found[found.size() - 1];
@@ -41,7 +45,11 @@ bool Member::borrowBook(resizableArray<Book> &catalog, size_t catalogSize, strin
                 cout << "----------------------------------------" << endl;
             }
             cout << "Which one would like to borrow ? (0 if none)" << endl;
-            int idx; cin >> idx;
+            int idx;
+            while (idx < 0) {
+                validate(idx , "Your choice : ");
+                if (idx < 0)cout << "Invalid choice";
+            }
             if (idx) {
                 cout << "  [Success] " << name << " borrowed: \"" << found[idx - 1]->getTitle() << "\"" << endl;
                 --*found[idx - 1];
