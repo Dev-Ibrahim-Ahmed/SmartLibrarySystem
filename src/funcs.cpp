@@ -1,18 +1,18 @@
 #include "funcs.h"
 
-resizableArray<Book*> BookFind(const resizableArray<Book> &arr, const size_t &n, const string &query) {
+resizableArray<Book*> BookFind(resizableArray<Book> &arr, const string &query) {
     resizableArray<Book*> x;
-    for (size_t i = 0; i < n; i++) {
+    for (size_t i = 0; i < arr.size(); i++) {
         if (arr[i].getAuthor() == query || arr[i].getCategory() == query ||
             arr[i].getISBN() == query || arr[i].getTitle() == query) {
-            x.addItem(const_cast<Book*>(&arr[i]));
+            x.addItem(&arr[i]);
         }
     }
     return x;
 }
 
-Book* BookFind(const resizableArray<Book> &arr, const size_t &n, const Book &query) {
-    int l = 0, r = static_cast<int>(n) - 1, mid, ans = -1;
+Book* BookFind(resizableArray<Book> &arr , const Book &query) {
+    int l = 0, r = arr.size() - 1, mid, ans = -1;
     while (l <= r) {
         mid = (l + r) / 2;
         if (arr[mid].getISBN() < query.getISBN()) {
@@ -25,7 +25,7 @@ Book* BookFind(const resizableArray<Book> &arr, const size_t &n, const Book &que
         }
     }
     if (ans == -1) return nullptr;
-    return const_cast<Book*>(&arr[ans]);
+    return &arr[ans];
 }
 
 void sortBooksByTitle(resizableArray<Book> &arr) {

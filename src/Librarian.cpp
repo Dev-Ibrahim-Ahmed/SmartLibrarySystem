@@ -1,116 +1,121 @@
 #include "Librarian.h"
 
-Librarian::Librarian() : Person(), employeeId("") {}
+Librarian::Librarian()
+    : Person(), employeeId("")
+{
+}
 
-Librarian::Librarian(int id, const string &name, const string &password, const string &employeeId)
-    : Person(id, name, password), employeeId(employeeId) {}
+Librarian::Librarian(
+    int id,
+    const string& name,
+    const string& password,
+    const string& employeeId
+)
+    : Person(id, name, password),
+      employeeId(employeeId)
+{
+}
 
-void Librarian::addBook(Book* book) {
-    if (book == nullptr) {
-        cout << "Invalid book." << endl;
-        return;
-    }
+void Librarian::addBook(resizableArray<Book> &books)
+{
+    Book book;
+    cin >> book;
     books.addItem(book);
-    cout << "Book added successfully." << endl;
+
+    cout << "Book added successfully.\n";
 }
 
-void Librarian::removeBook(Book* book) {
-    if (book == nullptr) {
-        cout << "Invalid book." << endl;
-        return;
-    }
-    for (int i = 0; i < books.size(); i++) {
-        if (books[i] == book) {
-            cout << "Book removed: " << books[i]->getTitle() << endl;
+void Librarian::removeBook(resizableArray<Book> &books)
+{
+    Book book;
+    cin >> book;
+
+    for (int i = 0; i < books.size(); i++)
+    {
+        if (books[i] == book)
+        {
+            for (int j = i; j < books.size(); ++j) {
+                books[j] = books[j + 1];
+            }
+            cout << "Book removed successfully.\n";
             return;
         }
     }
-    cout << "Book not found." << endl;
+
+    cout << "Book not found.\n";
 }
 
-void Librarian::addMember(Member* member) {
-    if (member == nullptr) {
-        cout << "Invalid member." << endl;
-        return;
+void Librarian::addMember(resizableArray<Person *>& members)
+{
+    int id;
+    while (id > 0) {
+        validate(id , "Enter the ID : ");
+        if (id <= 0)cout << "Invalid ID";
     }
-    members.addItem(member);
-    cout << "Member added successfully." << endl;
+    string name , password;
+    validate(name , "Enter the Name : ");
+    validate(password , "Enter the Password");
+    Person *p =  new Member(id , name , password);
+    members.addItem(p);
+
+    cout << "Member added successfully.\n";
 }
 
-void Librarian::removeMember(Member* member) {
-    if (member == nullptr) {
-        cout << "Invalid member." << endl;
-        return;
-    }
-    for (int i = 0; i < members.size(); i++) {
-        if (members[i] == member) {
-            cout << "Member removed: " << members[i]->getName() << endl;
+void Librarian::removeMember(resizableArray<Person *>& members)
+{
+
+    for (int i = 0; i < members.size(); i++)
+    {
+        if (members[i] == )
+        {
+            cout << "Member removed successfully.\n";
             return;
         }
     }
-    cout << "Member not found." << endl;
+
+    cout << "Member not found.\n";
 }
 
-void Librarian::displayBooks() const {
-    cout << "=== Library Books ===" << endl;
-    if (books.size() == 0) {
-        cout << "No books available." << endl;
-        return;
-    }
-    for (int i = 0; i < books.size(); i++) {
-        if (books[i] != nullptr) {
-            cout << (i + 1) << ". ";
+void Librarian::displayBooks(const resizableArray<Book*>& books) const{
+    cout << "\n===== Books =====\n";
+
+    for (int i = 0; i < books.size(); i++)
+    {
+        if (books[i] != nullptr)
             books[i]->showData();
-        }
     }
 }
 
-void Librarian::displayMembers() const {
-    cout << "=== Library Members ===" << endl;
-    if (members.size() == 0) {
-        cout << "No members registered." << endl;
-        return;
-    }
-    for (int i = 0; i < members.size(); i++) {
-        if (members[i] != nullptr) {
+void Librarian::displayMembers(const resizableArray<Member*>& members) const{
+    cout << "\n===== Members =====\n";
+
+    for (int i = 0; i < members.size(); i++)
+    {
+        if (members[i] != nullptr)
             members[i]->displayInfo();
-        }
     }
 }
 
-string Librarian::getEmployeeId() const {
+string Librarian::getEmployeeId() const
+{
     return employeeId;
 }
 
-void Librarian::setEmployeeId(const string &newEmployeeId) {
+void Librarian::setEmployeeId(const string& newEmployeeId)
+{
     employeeId = newEmployeeId;
 }
 
-void Librarian::displayInfo() const {
-    cout << "[Librarian Profile] ID: " << getId() << " | Name: " << getName() << " | Employee ID: " << employeeId << endl;
+void Librarian::displayInfo() const
+{
+    Person::displayInfo();
+
+    cout << "Employee ID: "
+         << employeeId << endl;
 }
 
-void Librarian::displayStatistics() const {
-    int totalTitles = books.size();
-    int totalCopies = 0;
-    for (int i = 0; i < books.size(); i++) {
-        if (books[i] != nullptr) {
-            totalCopies += books[i]->getCount();
-        }
-    }
-
-    int totalMembers = members.size();
-    int totalBorrowed = 0;
-    for (int i = 0; i < members.size(); i++) {
-        if (members[i] != nullptr) {
-            totalBorrowed += members[i]->Borrowed;
-        }
-    }
-
-    cout << "=== Library Statistics ===" << endl;
-    cout << "Total Book Titles     : " << totalTitles << endl;
-    cout << "Total Available Copies: " << totalCopies << endl;
-    cout << "Total Borrowed Books  : " << totalBorrowed << endl;
-    cout << "Total Active Members  : " << totalMembers << endl;
+void Librarian::displayStatistics() const
+{
+    cout << "Librarian: " << name << endl;
+    cout << "Employee ID: " << employeeId << endl;
 }
-

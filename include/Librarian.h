@@ -11,26 +11,25 @@
 using namespace std;
 
 class Librarian : public Person {
-public:
-    resizableArray<Book*> books;
-    resizableArray<Member*> members;
     string employeeId;
-
+public:
     Librarian();
     Librarian(int id, const string &name, const string &password, const string &employeeId);
 
-    void addBook(Book* book);
-    void removeBook(Book* book);
+    void addBook(resizableArray<Book>& books);
+    void removeBook(resizableArray<Book>& books);
 
-    void addMember(Member* member);
-    void removeMember(Member* member);
+    void addMember(resizableArray<Person *>& members);
+    void removeMember(resizableArray<Person *>& members);
 
-    void displayBooks() const;
-    void displayMembers() const;
+    void displayBooks(const resizableArray<Book*>& books) const;
+    void displayMembers(const resizableArray<Member*>& members) const;
 
+    string getType() const override{return "librarian";}
     string getEmployeeId() const;
     void setEmployeeId(const string &newEmployeeId);
 
+    void menu() override;
     void displayInfo() const override;
     void displayStatistics() const;
 };

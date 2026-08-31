@@ -23,7 +23,7 @@ void DataManager::loadBooks(const string &filePath, resizableArray<Book> &catalo
         int cnt = j[i]["cnt"];
         catalog.addItem(Book(title, ISBN, category, author, cnt));
     }
-    cout << "Loaded " << catalog.size() << " books from " << filePath << endl;
+    cout << "Loaded " << catalog.size() << " books from database"<< endl;
 }
 
 void DataManager::saveBooks(const string &filePath, const resizableArray<Book> &catalog) {
@@ -64,7 +64,8 @@ void DataManager::loadPersons(const string &filePath, resizableArray<Person *> &
         if (type == "Librarian") {
             string empId = j[i]["employeeId"];
             users.addItem(new Librarian(id, name, password, empId));
-        } else {
+        }
+        else {
             int limit = j[i]["limit"];
             Member *m = new Member(id, name, password, limit);
 
@@ -74,7 +75,8 @@ void DataManager::loadPersons(const string &filePath, resizableArray<Person *> &
                 for (int b = 0; b < catalog.size(); b++) {
                     if (catalog[b].getTitle() == bookTitle || catalog[b].getISBN() == bookTitle) {
                         if (m->Borrowed < m->limit) {
-                            m->books[m->Borrowed++] = const_cast<Book*>(&catalog[b]);
+                            m->books.addItem(&catalog[b]);
+                            m->Borrowed++;
                         }
                         break;
                     }
@@ -83,7 +85,7 @@ void DataManager::loadPersons(const string &filePath, resizableArray<Person *> &
             users.addItem(m);
         }
     }
-    cout << "Loaded " << users.size() << " users from " << filePath << endl;
+    cout << "Loaded " << users.size() << " users from database" << endl;
 }
 
 void DataManager::savePersons(const string &filePath, const resizableArray<Person *> &users) {
@@ -108,7 +110,8 @@ void DataManager::savePersons(const string &filePath, const resizableArray<Perso
             u["limit"] = m->getLimit();
             u["borrowedBooks"] = bList;
             j.push_back(u);
-        } else {
+        }
+        else {
             Librarian *lib = dynamic_cast<Librarian*>(users[i]);
             if (lib != nullptr) {
                 json u;
