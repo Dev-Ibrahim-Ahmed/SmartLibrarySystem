@@ -54,6 +54,14 @@ public :
     Type& operator [](size_t x) const {
         return array[x];
     }
+
+    void removeItemAt(size_t index) {
+    if (index >= idx) return;
+    for (size_t i = index; i < idx - 1; ++i) {
+        array[i] = array[i + 1];
+    }
+    idx--;
+}
 };
 
 

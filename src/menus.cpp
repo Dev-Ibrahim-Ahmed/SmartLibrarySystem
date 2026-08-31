@@ -1,9 +1,6 @@
-//
-// Created by Ibrbahim on 8/31/2026.
-//
 #include "menus.h"
-void showLoadingMenu(const string& taskName, int durationMs = 1200) {
 
+void showLoadingMenu(const string& taskName, int durationMs) {
     cout << "\n\n";
     printCentered(CYAN + BOLD + boxLine + RESET);
     printCentered(BOLD + "SMART LIBRARY SYSTEM" + RESET);

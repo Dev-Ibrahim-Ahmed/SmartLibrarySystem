@@ -6,26 +6,39 @@
 #include <string>
 #include <cstddef>
 #include <limits>
+#include <algorithm>
+#include <cctype>
 
 using namespace std;
 
-resizableArray<Book*> BookFind(resizableArray<Book> &arr , const string &query);
-Book* BookFind(resizableArray<Book> &arr , const Book &query);
+resizableArray<Book*> BookFind(resizableArray<Book> &arr, const string &query);
+Book* BookFind(resizableArray<Book> &arr, const Book &query);
+
 
 template <class T>
 T validateInput() {
     T val;
     if (!(cin >> val)) {
         cin.clear();
-        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        throw std::invalid_argument("Invalid data type.");
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        throw invalid_argument("Invalid data type.");
     }
 
     char nextChar;
     if (cin.get(nextChar) && nextChar != '\n') {
         cin.unget();
-        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        throw std::invalid_argument("Invalid characters found on input line.");
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        throw invalid_argument("Invalid characters found on input line.");
+    }
+    return val;
+}
+
+template <>
+inline string validateInput<string>() {
+    string val;
+    getline(cin >> ws, val);
+    if (val.empty()) {
+        throw invalid_argument("Input cannot be empty.");
     }
     return val;
 }
@@ -38,10 +51,10 @@ void validate(T &x, const string &prompt = "Enter value : ") {
             x = validateInput<T>();
             break;
         }
-        catch (const std::invalid_argument &e) {
+        catch (const invalid_argument &e) {
             cout << "  [Error] " << e.what() << " Please try again.\n";
         }
-        catch (const std::runtime_error &e) {
+        catch (const runtime_error &e) {
             cout << "  [Fatal Error] " << e.what() << "\n";
             throw;
         }
