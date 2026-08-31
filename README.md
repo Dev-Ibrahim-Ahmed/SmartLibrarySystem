@@ -122,13 +122,6 @@ cmake --build build
 
 ---
 
-## Contributors
-
-- **Ahmed Abdoo** - Member & Person Modules, Authentication, Polymorphism, and System Integration.
-- **Ibrahim Al Abd** - Book Module, Custom `resizableArray` Template, Search/Sort Utilities, and UI Menus.
-
----
-
 ## License
 
 This project is licensed under the MIT License.
