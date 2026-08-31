@@ -20,8 +20,9 @@ add_executable(SmartLibrarySystem
     include/funcs.h
     src/funcs.cpp
     include/resizableArray.h
-    src/resizableArray.cpp
     include/DataManager.h
     src/DataManager.cpp
     include/json.hpp
+        include/menus.h
+        src/menus.cpp
 )

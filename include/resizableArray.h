@@ -1,65 +1,62 @@
-#ifndef RESIZABLEARRAY_H
-#define RESIZABLEARRAY_H
+//
+// Created by Ibrahim on 8/30/2026.
+//
 
+#ifndef SMARTLIBRARYSYSTEM_RESIZABLEARRAY_H
+#define SMARTLIBRARYSYSTEM_RESIZABLEARRAY_H
 #include <cstddef>
-
+using std::size_t;
 template<class Type>
 class resizableArray {
     Type *array;
-    size_t sz;
-    size_t idx;
-
-    void resize() {
-        size_t newSz = (sz == 0) ? 16 : 2 * sz;
-        Type *arr = new Type[newSz];
-        for (size_t i = 0; i < idx; i++) {
-            arr[i] = array[i];
-        }
+    size_t sz , idx;
+    void resize(){
+        sz *= 2;
+        Type *arr = new Type[sz];
+        for (int i = 0; i < idx; ++i)arr[i] = array[i];
         delete[] array;
         array = arr;
-        sz = newSz;
+    };
+public :
+    resizableArray() : sz(16) , idx(0){
+    array = new Type[sz];
     }
-
-public:
-    resizableArray() : array(new Type[16]), sz(16), idx(0) {}
-    resizableArray(size_t x) : array(new Type[x ? 2 * x : 16]), sz(x ? 2 * x : 16), idx(x) {}
-
-    ~resizableArray() {
-        delete[] array;
+    resizableArray(size_t x) : sz(2*x) , idx(0){
+    array = new Type[sz];
     }
-
-    resizableArray(const resizableArray &other) : sz(other.sz), idx(other.idx) {
-        array = new Type[sz];
-        for (size_t i = 0; i < idx; i++) {
-            array[i] = other.array[i];
+    resizableArray(const resizableArray &arr) : sz(arr.sz), idx(arr.idx) {
+    array = new Type[sz];
+        for (size_t i = 0; i < idx; ++i) {
+            array[i] = arr.array[i];
         }
     }
-
-    resizableArray& operator=(const resizableArray &other) {
-        if (this != &other) {
+    resizableArray& operator=(const resizableArray &arr) {
+        if (this != &arr) {
             delete[] array;
-            sz = other.sz;
-            idx = other.idx;
+            sz = arr.sz;
+            idx = arr.idx;
             array = new Type[sz];
-            for (size_t i = 0; i < idx; i++) {
-                array[i] = other.array[i];
+            for (size_t i = 0; i < idx; ++i) {
+                array[i] = arr.array[i];
             }
         }
         return *this;
     }
-
+    ~resizableArray() {
+        delete[] array;
+    }
     void addItem(Type x) {
-        if (idx == sz) resize();
-        array[idx++] = x;
+        if (idx == sz)resize();
+        array[idx] = x;
+        idx++;
     }
-
-    int size() const {
-        return static_cast<int>(idx);
-    }
-
-    Type& operator[](size_t x) const {
+    [[nodiscard]] int size() const{return idx;}
+    Type& operator [](size_t x) const {
         return array[x];
     }
 };
 
-#endif
+
+
+
+#endif //SMARTLIBRARYSYSTEM_RESIZABLEARRAY_H
