@@ -1,26 +1,57 @@
-﻿#include "DataManager.h"
+#include "DataManager.h"
 #include "json.hpp"
 #include <fstream>
 #include <iostream>
 
 using json = nlohmann::json;
 
+static bool openInputFile(const string &filePath, ifstream &file) {
+    file.open(filePath);
+    if (file.is_open()) return true;
+
+    // Fallback if launched from different working directory
+    string alt = (filePath.rfind("../", 0) == 0) ? filePath.substr(3) : ("../" + filePath);
+    file.open(alt);
+    return file.is_open();
+}
+
+static bool openOutputFile(const string &filePath, ofstream &file, string &actualPath) {
+    file.open(filePath);
+    if (file.is_open()) {
+        actualPath = filePath;
+        return true;
+    }
+
+    string alt = (filePath.rfind("../", 0) == 0) ? filePath.substr(3) : ("../" + filePath);
+    file.open(alt);
+    if (file.is_open()) {
+        actualPath = alt;
+        return true;
+    }
+    return false;
+}
+
 void DataManager::loadBooks(const string &filePath, resizableArray<Book> &catalog) {
-    ifstream file(filePath);
-    if (!file.is_open()) {
+    ifstream file;
+    if (!openInputFile(filePath, file)) {
         cout << "Could not open " << filePath << endl;
         return;
     }
 
     json j;
-    file >> j;
+    try {
+        file >> j;
+    } catch (...) {
+        cout << "Error reading JSON from " << filePath << endl;
+        return;
+    }
 
     for (int i = 0; i < (int)j.size(); i++) {
-        string title = j[i]["title"];
-        string author = j[i]["author"];
-        string ISBN = j[i]["ISBN"];
-        string category = j[i]["category"];
-        int cnt = j[i]["cnt"];
+        string title = j[i].value("title", "");
+        string author = j[i].value("author", "");
+        string ISBN = j[i].value("ISBN", "");
+        string category = j[i].value("category", "");
+        int cnt = j[i].value("cnt", 1);
         catalog.addItem(Book(title, ISBN, category, author, cnt));
     }
     cout << "Loaded " << catalog.size() << " books from database." << endl;
@@ -38,46 +69,54 @@ void DataManager::saveBooks(const string &filePath, const resizableArray<Book> &
         j.push_back(b);
     }
 
-    ofstream file(filePath);
-    if (file.is_open()) {
+    ofstream file;
+    string actualPath;
+    if (openOutputFile(filePath, file, actualPath)) {
         file << j.dump(4) << endl;
-        cout << "Saved " << catalog.size() << " books to " << filePath << endl;
+        cout << "Saved " << catalog.size() << " books to " << actualPath << endl;
     }
 }
 
 void DataManager::loadPersons(const string &filePath, resizableArray<Person *> &users, const resizableArray<Book> &catalog) {
-    ifstream file(filePath);
-    if (!file.is_open()) {
+    ifstream file;
+    if (!openInputFile(filePath, file)) {
         cout << "Could not open " << filePath << endl;
         return;
     }
 
     json j;
-    file >> j;
+    try {
+        file >> j;
+    } catch (...) {
+        cout << "Error reading JSON from " << filePath << endl;
+        return;
+    }
 
     for (int i = 0; i < (int)j.size(); i++) {
-        string type = j[i]["type"];
-        int id = j[i]["id"];
-        string name = j[i]["name"];
-        string password = j[i]["password"];
+        string type = j[i].value("type", "Member");
+        int id = j[i].value("id", 0);
+        string name = j[i].value("name", "");
+        string password = j[i].value("password", "");
 
         if (type == "Librarian") {
-            string empId = j[i]["employeeId"];
+            string empId = j[i].value("employeeId", "");
             users.addItem(new Librarian(id, name, password, empId));
         } else {
-            int limit = j[i]["limit"];
+            int limit = j[i].value("limit", 3);
             Member *m = new Member(id, name, password, limit);
 
-            json bList = j[i]["borrowedBooks"];
-            for (int k = 0; k < (int)bList.size(); k++) {
-                string bookTitle = bList[k];
-                for (int b = 0; b < catalog.size(); b++) {
-                    if (catalog[b].getTitle() == bookTitle || catalog[b].getISBN() == bookTitle) {
-                        if (m->Borrowed < m->limit) {
-                            m->books.addItem(const_cast<Book*>(&catalog[b]));
-                            m->Borrowed++;
+            if (j[i].contains("borrowedBooks") && j[i]["borrowedBooks"].is_array()) {
+                json bList = j[i]["borrowedBooks"];
+                for (int k = 0; k < (int)bList.size(); k++) {
+                    string bookTitle = bList[k];
+                    for (int b = 0; b < catalog.size(); b++) {
+                        if (catalog[b].getTitle() == bookTitle || catalog[b].getISBN() == bookTitle) {
+                            if (m->Borrowed < m->limit) {
+                                m->books.addItem(const_cast<Book*>(&catalog[b]));
+                                m->Borrowed++;
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
             }
@@ -123,9 +162,10 @@ void DataManager::savePersons(const string &filePath, const resizableArray<Perso
         }
     }
 
-    ofstream file(filePath);
-    if (file.is_open()) {
+    ofstream file;
+    string actualPath;
+    if (openOutputFile(filePath, file, actualPath)) {
         file << j.dump(4) << endl;
-        cout << "Saved users to " << filePath << endl;
+        cout << "Saved users to " << actualPath << endl;
     }
 }

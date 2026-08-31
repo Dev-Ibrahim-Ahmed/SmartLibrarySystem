@@ -24,7 +24,7 @@ public:
     string getPassword() const;
     virtual int getLimit() const { return 0; }
     virtual int getBorrowed() const { return 0; }
-    virtual Book* operator[](int i) const { return nullptr; }
+    virtual Book* operator[](int) const { return nullptr; }
     void setId(int newId);
     void setName(const string &newName);
     void setPassword(const string &newPassword);

@@ -11,7 +11,7 @@ resizableArray<Book*> BookFind(resizableArray<Book> &arr, const string &query) {
     resizableArray<Book*> matches;
     string qLower = toLower(query);
 
-    for (size_t i = 0; i < arr.size(); i++) {
+    for (int i = 0; i < arr.size(); i++) {
         string title = toLower(arr[i].getTitle());
         string author = toLower(arr[i].getAuthor());
         string category = toLower(arr[i].getCategory());
@@ -31,7 +31,7 @@ Book* BookFind(resizableArray<Book> &arr, const Book &query) {
     // Requires catalog to be sorted by ISBN first!
     sortBooksByISBN(arr);
 
-    int l = 0, r = (int)arr.size() - 1;
+    int l = 0, r = arr.size() - 1;
     while (l <= r) {
         int mid = l + (r - l) / 2;
         if (arr[mid].getISBN() == query.getISBN()) {

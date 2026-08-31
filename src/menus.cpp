@@ -1,5 +1,14 @@
 #include "menus.h"
 
+#ifdef _WIN32
+#include <windows.h>
+#define SLEEP_MS(ms) Sleep(ms)
+#else
+#include <thread>
+#include <chrono>
+#define SLEEP_MS(ms) std::this_thread::sleep_for(std::chrono::milliseconds(ms))
+#endif
+
 void showLoadingMenu(const string& taskName, int durationMs) {
     cout << "\n\n";
     printCentered(CYAN + BOLD + boxLine + RESET);
@@ -14,7 +23,7 @@ void showLoadingMenu(const string& taskName, int durationMs) {
     for (int i = 0; i < frameCount; ++i) {
         string statusText = YELLOW + string(1, spinner[i % 4]) + " " + taskName + "..." + RESET;
         printCentered(statusText);
-        std::this_thread::sleep_for(std::chrono::milliseconds(delayPerFrame));
+        SLEEP_MS(delayPerFrame);
         cout << "\033[1A\033[2K" << flush;
     }
 
