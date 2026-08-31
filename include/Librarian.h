@@ -12,20 +12,21 @@ using namespace std;
 
 class Librarian : public Person {
     string employeeId;
+
 public:
     Librarian();
     Librarian(int id, const string &name, const string &password, const string &employeeId);
 
-    void addBook(resizableArray<Book>& books);
-    void removeBook(resizableArray<Book>& books);
+    void addBook(resizableArray<Book>& catalog);
+    void removeBook(resizableArray<Book>& catalog, const string& isbn);
 
-    void addMember(resizableArray<Person *>& members);
-    void removeMember(resizableArray<Person *>& members);
+    void addMember(resizableArray<Person *>& users);
+    void removeMember(resizableArray<Person *>& users, int memberId);
 
-    void displayBooks(const resizableArray<Book*>& books) const;
-    void displayMembers(const resizableArray<Member*>& members) const;
+    void displayBooks(const resizableArray<Book>& catalog) const;
+    void displayMembers(const resizableArray<Person*>& users) const;
 
-    string getType() const override{return "librarian";}
+    string getType() const override { return "Librarian"; }
     string getEmployeeId() const;
     void setEmployeeId(const string &newEmployeeId);
 

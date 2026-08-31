@@ -9,58 +9,51 @@
 #include "menus.h"
 
 using namespace std;
+
 resizableArray<Book> catalog(500);
 resizableArray<Person*> users;
-resizableArray<Member>members;
+
 void Member::menu() {
     clearConsole();
     int ch;
     while (true) {
-        printCentered("Welcome Member " + BOLD + YELLOW + getName());
-        cout << "Enter 1 to display your info" << endl;
-        cout << "Enter 2 to Borrow a Book" << endl;
-        cout << "Enter 3 to return a Book" << endl;
-        cout << "Enter 4 to view Borrowed Books" << endl;
-        cout << "Enter 5 to view fines" << endl;
-        cout << "Enter 0 to Exit" << endl;
-        validate(ch);
+        printCentered("Welcome Member " + BOLD + YELLOW + getName() + RESET);
+        cout << "\n1. Display Info" << endl;
+        cout << "2. Borrow a Book" << endl;
+        cout << "3. Return a Book" << endl;
+        cout << "4. View Borrowed Books" << endl;
+        cout << "5. View Fines" << endl;
+        cout << "0. Logout" << endl;
+
+        validate(ch, "Enter choice: ");
         switch (ch) {
-            case 1 :
+            case 1:
                 displayInfo();
                 break;
-            case 2 : {
+            case 2: {
                 string q;
-                cout << "Enter your query : ";
-                validate(q);
-                borrowBook(catalog , q);
+                validate(q, "Enter title, author, or ISBN to search: ");
+                borrowBook(catalog, q);
                 break;
             }
-            case 3 : {
-                string isbn;
-                cout << "Enter the book ISBN : ";
-                validate(isbn);
-                returnBook(isbn);
+            case 3: {
+                string titleOrIsbn;
+                validate(titleOrIsbn, "Enter the Book Title or ISBN to return: ");
+                returnBook(titleOrIsbn);
                 break;
             }
-            case 4 : {
-                if (Borrowed == 0) {
-                    cout << "No borrowed books." << endl;
-                } else {
-                    for (int i = 0; i < Borrowed; i++) {
-                        if (books[i] != nullptr) {
-                            cout << i + 1 << "  - " << books[i]->getTitle() << endl;
-                        }
-                    }
-                }
+            case 4: {
+                displayInfo();
                 break;
             }
-            case 5 : {
-                cout << BOLD << "you have to pay a total of : " << fines << endl;
+            case 5: {
+                cout << BOLD << "Total fine balance: $" << fines << RESET << endl;
+                break;
             }
-            case 0 :
+            case 0:
+                clearConsole();
                 return;
-
-            default :
+            default:
                 cout << "Invalid choice!" << endl;
         }
     }
@@ -70,82 +63,123 @@ void Librarian::menu() {
     clearConsole();
     int ch;
     while (true) {
-        cout << "Enter 1 to display your Info" << endl;
-        cout << "Enter 2 to add a Book to the category" << endl;
-        cout << "Enter 3 to remove a Book from the category" << endl;
-        cout << "Enter 4 to register a member" << endl;
-        cout << "Enter 5 to remove a member" << endl;
-        cout << "Enter 6 to view the category" << endl;
-        cout << "Enter 7 to view the members" << endl;
-        cout << "Enter 0 to Exit" << endl;
-        validate(ch , "Enter your choice : ");
+        cout << "\n=== LIBRARIAN MANAGEMENT ===" << endl;
+        cout << "1. Display Info" << endl;
+        cout << "2. Add a Book to Catalog" << endl;
+        cout << "3. Remove a Book from Catalog" << endl;
+        cout << "4. Register a Member" << endl;
+        cout << "5. Remove a Member" << endl;
+        cout << "6. View Catalog" << endl;
+        cout << "7. View Registered Members" << endl;
+        cout << "0. Logout" << endl;
+
+        validate(ch, "Enter choice: ");
         switch (ch) {
-            case 1 : {
+            case 1:
                 displayInfo();
                 break;
-            }
-            case 2 : {
+            case 2:
                 addBook(catalog);
+                break;
+            case 3: {
+                string isbn;
+                validate(isbn, "Enter ISBN of book to remove: ");
+                removeBook(catalog, isbn);
+                break;
             }
+            case 4:
+                addMember(users);
+                break;
+            case 5: {
+                int memberId;
+                validate(memberId, "Enter ID of member to remove: ");
+                removeMember(users, memberId);
+                break;
+            }
+            case 6:
+                displayBooks(catalog);
+                break;
+            case 7:
+                displayMembers(users);
+                break;
+            case 0:
+                clearConsole();
+                return;
+            default:
+                cout << "Invalid choice!" << endl;
         }
     }
 }
 
-void login_menu() {
+bool login_menu() {
     cout << "\n\n";
     printCentered(CYAN + BOLD + boxLine + RESET);
-    printCentered(BOLD + "SMART LIBRARY SYSTEM" + RESET);
+    printCentered(BOLD + "SMART LIBRARY SYSTEM LOG IN" + RESET);
     printCentered(CYAN + BOLD + boxLine + RESET);
     cout << "\n";
 
     int x;
-    Person *p = nullptr;
     while (true) {
-        validate(x , BOLD + "Enter your id : " + RESET);
-        if (x <= 0)continue;
-        cout << "Invalid Input";
+        validate(x, BOLD + "Enter ID (or 0 to Exit System): " + RESET);
+        if (x == 0) return false;
+        if (x < 0) {
+            cout << "Invalid ID format." << endl;
+            continue;
+        }
+
+        Person *p = nullptr;
         for (int i = 0; i < users.size(); ++i) {
-            if (users[i]->getId() == x) {
+            if (users[i] != nullptr && users[i]->getId() == x) {
                 p = users[i];
+                break;
             }
         }
-        if (p != nullptr)break;
-        cout << "No user with this ID was found" << endl;
-        for (int i = 0; i < 3; ++i) {
+
+        if (p == nullptr) {
+            cout << "No user found with ID: " << x << endl;
+            continue;
+        }
+
+        bool loggedIn = false;
+        for (int attempts = 0; attempts < 3; ++attempts) {
             string s;
-            validate(s , BOLD + "Enter your password : " + RESET);
+            validate(s, BOLD + "Enter Password: " + RESET);
             if (p->checkPassword(s)) {
-                cout << BOLD + GREEN + "Welcome " + p->getName() << RESET;
+                cout << BOLD + GREEN + "Welcome " + p->getName() + "!" + RESET << endl;
                 p->menu();
-                return;
+                loggedIn = true;
+                break;
             }
-            cout << "wrong password!" << endl;
+            cout << "Incorrect password! Attempts remaining: " << (2 - attempts) << endl;
         }
-        cout << "Too many wrong attempts!!!" << endl;
+
+        if (loggedIn) return true;
+        cout << "Too many wrong attempts! Returning to main prompt..." << endl;
         clearConsole();
     }
 }
 
-
-
 int main() {
-    showLoadingMenu("Initializing Program" , 2000);
-    showLoadingMenu("Initializing Database", 1000);
+    showLoadingMenu("Initializing Program", 1000);
+    showLoadingMenu("Initializing Database", 1500);
     DataManager::loadBooks("../data/books.json", catalog);
-    showLoadingMenu("Loading Data" , 1500);
     DataManager::loadPersons("../data/persons.json", users, catalog);
-    for (int i = 0; i < users.size(); ++i) {
-        if (users[i]->getType() == "Member") {
-            Member m(users[i]->getId() , users[i]->getName() , users[i]->getPassword() , users[i]->getLimit());
-            for (int j = 0; j < users[i]->getBorrowed(); ++i) {
-                *m[i] = *(*users[i])[i];
-            }
-            members.addItem(m);
-        }
+    showLoadingMenu("starting program", 1500);
+    clearConsole();
+
+    bool running = true;
+    while (running) {
+        running = login_menu();
     }
-    cout << "\033[H\033[2J" << endl;
 
+    cout << "\nSaving system state to storage..." << endl;
+    DataManager::saveBooks("../data/books.json", catalog);
+    DataManager::savePersons("../data/persons.json", users);
 
+    for (int i = 0; i < users.size(); ++i) {
+        delete users[i];
+    }
 
-
+    cout << GREEN << "System shutdown completed successfully." << RESET << endl;
+    return 0;
 }

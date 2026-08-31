@@ -22,16 +22,17 @@ public:
     int getId() const;
     string getName() const;
     string getPassword() const;
-    virtual int getLimit() const = 0;
-    virtual int getBorrowed() const = 0;
+    virtual int getLimit() const { return 0; }
+    virtual int getBorrowed() const { return 0; }
+    virtual Book* operator[](int i) const { return nullptr; }
     void setId(int newId);
     void setName(const string &newName);
     void setPassword(const string &newPassword);
     bool checkPassword(const string &pass) const;
+
     virtual void menu() = 0;
     virtual string getType() const = 0;
     virtual void displayInfo() const = 0;
-    virtual Book *operator [](int i) const = 0;
 };
 
 #endif

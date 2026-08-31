@@ -1,31 +1,49 @@
 #include "funcs.h"
 
-resizableArray<Book*> BookFind(resizableArray<Book> &arr, const string &query) {
-    resizableArray<Book*> x;
-    for (size_t i = 0; i < arr.size(); i++) {
-        if (arr[i].getAuthor() == query || arr[i].getCategory() == query ||
-            arr[i].getISBN() == query || arr[i].getTitle() == query) {
-            x.addItem(&arr[i]);
-        }
-    }
-    return x;
+// Helper function for case-insensitive substring searching
+static string toLower(const string &s) {
+    string res = s;
+    transform(res.begin(), res.end(), res.begin(), [](unsigned char c){ return tolower(c); });
+    return res;
 }
 
-Book* BookFind(resizableArray<Book> &arr , const Book &query) {
-    int l = 0, r = arr.size() - 1, mid, ans = -1;
-    while (l <= r) {
-        mid = (l + r) / 2;
-        if (arr[mid].getISBN() < query.getISBN()) {
-            r = mid - 1;
-        } else if (arr[mid].getISBN() > query.getISBN()) {
-            l = mid + 1;
-        } else {
-            ans = mid;
-            break;
+resizableArray<Book*> BookFind(resizableArray<Book> &arr, const string &query) {
+    resizableArray<Book*> matches;
+    string qLower = toLower(query);
+
+    for (size_t i = 0; i < arr.size(); i++) {
+        string title = toLower(arr[i].getTitle());
+        string author = toLower(arr[i].getAuthor());
+        string category = toLower(arr[i].getCategory());
+        string isbn = toLower(arr[i].getISBN());
+
+        if (title.find(qLower) != string::npos ||
+            author.find(qLower) != string::npos ||
+            category.find(qLower) != string::npos ||
+            isbn.find(qLower) != string::npos) {
+            matches.addItem(&arr[i]);
         }
     }
-    if (ans == -1) return nullptr;
-    return &arr[ans];
+    return matches;
+}
+
+Book* BookFind(resizableArray<Book> &arr, const Book &query) {
+    // Requires catalog to be sorted by ISBN first!
+    sortBooksByISBN(arr);
+
+    int l = 0, r = (int)arr.size() - 1;
+    while (l <= r) {
+        int mid = l + (r - l) / 2;
+        if (arr[mid].getISBN() == query.getISBN()) {
+            return &arr[mid];
+        }
+        if (arr[mid].getISBN() < query.getISBN()) {
+            l = mid + 1; // Search right half
+        } else {
+            r = mid - 1; // Search left half
+        }
+    }
+    return nullptr;
 }
 
 void sortBooksByTitle(resizableArray<Book> &arr) {
@@ -68,4 +86,3 @@ void sortBooksByTitle(resizableArray<Book*> &arr) {
         }
     }
 }
-
