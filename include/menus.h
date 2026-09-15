@@ -2,10 +2,8 @@
 #define SMARTLIBRARYSYSTEM_MENUS_H
 
 #include <iostream>
-#include <thread>
 #include <chrono>
 #include <string>
-#include <iomanip>
 
 using std::cout;
 using std::string;

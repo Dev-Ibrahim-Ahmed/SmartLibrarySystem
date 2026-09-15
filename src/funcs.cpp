@@ -1,6 +1,5 @@
 #include "funcs.h"
 
-// Helper function for case-insensitive substring searching
 static string toLower(const string &s) {
     string res = s;
     transform(res.begin(), res.end(), res.begin(), [](unsigned char c){ return tolower(c); });
@@ -28,7 +27,6 @@ resizableArray<Book*> BookFind(resizableArray<Book> &arr, const string &query) {
 }
 
 Book* BookFind(resizableArray<Book> &arr, const Book &query) {
-    // Requires catalog to be sorted by ISBN first!
     sortBooksByISBN(arr);
 
     int l = 0, r = arr.size() - 1;
@@ -38,9 +36,10 @@ Book* BookFind(resizableArray<Book> &arr, const Book &query) {
             return &arr[mid];
         }
         if (arr[mid].getISBN() < query.getISBN()) {
-            l = mid + 1; // Search right half
-        } else {
-            r = mid - 1; // Search left half
+            l = mid + 1;
+        }
+        else {
+            r = mid - 1;
         }
     }
     return nullptr;

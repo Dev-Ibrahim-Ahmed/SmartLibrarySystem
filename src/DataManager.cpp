@@ -9,7 +9,6 @@ static bool openInputFile(const string &filePath, ifstream &file) {
     file.open(filePath);
     if (file.is_open()) return true;
 
-    // Fallback if launched from different working directory
     string alt = (filePath.rfind("../", 0) == 0) ? filePath.substr(3) : ("../" + filePath);
     file.open(alt);
     return file.is_open();
